@@ -1,16 +1,30 @@
-from datetime import datetime
-from urllib import urlencode
-from urllib2 import urlopen
-from StringIO import StringIO
-from numpy import genfromtxt
-import ast
+import urllib2
+import json
+from pprint import pprint
 
-station_ids = [ 2 ]
+def extract_station_data(code):
+    url = "http://data.hisparc.nl/api/station/%d/"%(code)
+    try:
+        response = json.loads(urllib2.urlopen(url).read())
+    except urllib2.HTTPError:
+        return None
+    else:
+        return response
 
-base_url = "http://data.hisparc.nl/api/station/%d/"
+def get_stations():
+    data = []
+    url = 'http://data.hisparc.nl/api/stations'
+    response = json.loads(urllib2.urlopen(url).read())
+    for station in response:
+        data.append(station['number'])
+    return data
 
-for id in station_ids:
-	url = urlopen(base_url % (id))
-	meta_data = ast.literal_eval(url.read())
-	print( type( meta_data ) )
-	print( meta_data )
+def main():
+    station_ids = get_stations()
+    for code in station_ids:
+        out = extract_station_data(code)
+        if out is not None:
+            pprint(out)
+
+if __name__ == '__main__':
+    main()
