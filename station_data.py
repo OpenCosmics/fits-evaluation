@@ -29,7 +29,7 @@ def get_events(station, start, end):
     url = 'http://data.hisparc.nl/data/'+str(station)+'/events'
     query = urlencode({'download': False, 'start': start,'end': end})
     full_url = url + '?' + query
-    data = urlopen(full_url).read()
+    data = json.loads(urlopen(full_url).read())
     format = [('date', 'datetime64[D]'), ('time', '|S8'),
               ('timestamp', 'uint32'), ('nanoseconds', 'uint32'),
               ('pulseheights', '4int16'), ('integrals', '4int32'),
@@ -39,6 +39,7 @@ def get_events(station, start, end):
               ('t3', 'float32'), ('t4', 'float32'),
               ('t_trigger', 'float32')]
     a = genfromtxt(StringIO(data), delimiter="\t", dtype=format)
+    print data()
     return a
 
 def main():
