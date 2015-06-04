@@ -11,5 +11,6 @@ base_url = "http://data.hisparc.nl/api/station/%d/"
 
 for id in station_ids:
 	url = urlopen(base_url % (id))
-	meta_data = url.read()
+	meta_data = ast.literal_eval(url.read())
+	print( type( meta_data ) )
 	print( meta_data )
