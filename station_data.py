@@ -41,14 +41,21 @@ def get_events(station, start, end):
     a = genfromtxt(StringIO(data), delimiter="\t", dtype=format)
     return a
 
+def eventToJSON(event, station_data):
+    tempDict = [{'date': event[0], 'time': event[1], 'timestamp': event[2],
+                'nanoseconds': event[3], 'altitude': station_data['altitude'], 
+                'latitude': station_data['latitude'], 'longitude': station_data['longitude']}]
+    return tempDict
+
 def main():
-    station_ids = [3] #get_stations()
-    for code in station_ids:
-        out = extract_station_data(code)
-        if out is not None:
-            pprint(out)
-        out = get_events(code,datetime(2013, 7, 2, 11, 0),datetime(2013, 7, 2, 12, 0))
-        print(out)
+	station_ids = [3] #get_stations()
+	for code in station_ids:
+		outputStation = extract_station_data(code)
+		if outputStation is not None:
+			pprint(outputStation)
+		eventOutput = get_events(code,datetime(2013, 7, 2, 11, 0),datetime(2013, 7, 2, 11, 05))
+		for event in eventOutput:
+			print eventToJSON(event, outputStation)
 
 if __name__ == '__main__':
     main()
