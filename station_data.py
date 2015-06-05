@@ -55,6 +55,25 @@ def get_events(station, start, end):
     # Read the station data
     station_data = get_station_data(station)
 
+    # Resolve geolocation into UTC offset
+    timezonedb_url = 'http://api.timezonedb.com/'
+    query = urlencode({
+                       'lat': station_data['latitude'],
+                       'lng': station_data['longitude'],
+                       'key': 'DXDQADBGRKLF',
+                       'format': 'json'
+                      })
+
+    response = json.loads(urllib2.urlopen(timezonedb_url + '?' + query).read())
+    GMT_offset = int(response['gmtOffset'])
+
+    if GMT_offset < 0:
+        GMT_offset *= -1
+        GMT_offset = '-' + str(GMT_offset/3600).zfill(2) + ':' + str((GMT_offset%3600)/60).zfill(2)
+    else:
+        GMT_offset = '+' + str(GMT_offset/3600).zfill(2) + ':' + str((GMT_offset%3600)/60).zfill(2)
+
+
     csv_obj = csv.reader(data, delimiter = '\t')
     for row in csv_obj:
         # Ignore rows starting with a # (comments)
@@ -70,7 +89,7 @@ def get_events(station, start, end):
                              'altitude'  : station_data['altitude']
                             }
 
-        event['time'] = row[0] + ' ' + row[1] + '%9d'%(int(row[2]))
+        event['time'] = row[0] + ' ' + row[1] + '.%9d'%(int(row[2])) + GMT_offset
 
         event['window'] = None
 
