@@ -1,4 +1,3 @@
-from urllib2 import urlopen
 from datetime import date, datetime
 from urllib import urlencode
 #from pylab import plot, show
@@ -53,7 +52,7 @@ def get_events(station, start, end):
     query = urlencode({'download': False, 'start': start,'end': end})
 
     # Read the string as a file object
-    data = StringIO(urlopen(url + '?' + query).read())
+    data = StringIO(urllib2.urlopen(url + '?' + query).read())
 
     csv_obj = csv.reader(data, delimiter = '\t')
     for row in csv_obj:
