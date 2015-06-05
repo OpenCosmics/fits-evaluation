@@ -1,11 +1,9 @@
 from datetime import date, datetime
 from urllib import urlencode
-#from pylab import plot, show
 import urllib2
 import json
 from pprint import pprint
 from StringIO import StringIO
-from numpy import genfromtxt
 import csv
 
 def get_station_data(code):
